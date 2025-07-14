@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Clasificador Titanic</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    h1 {
+      color: #1976d2;
+      text-align: center;
+    }
+    form {
+      background-color: #e3f2fd;
+      padding: 60px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    input, select {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 15px;
+      border: 1px solid #90caf9;
+      border-radius: 4px;
+    }
+    button {
+      background-color: #1976d2;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #1565c0;
+    }
+    #resultado {
+      margin-top: 20px;
+      padding: 10px;
+      background-color: #e0e0e0;
+      border-radius: 4px;
+      text-align: center;
+    }
+  </style>
+  <script>
+    function predecir(event) {
+      event.preventDefault();
+
+      const datos = {
+        Pclass: parseInt(document.getElementById('Pclass').value),
+        Age: parseFloat(document.getElementById('Age').value),
+        SibSp: parseInt(document.getElementById('SibSp').value),
+        Parch: parseInt(document.getElementById('Parch').value),
+        Fare: parseFloat(document.getElementById('Fare').value),
+        Sex_male: parseInt(document.getElementById('Sex_male').value),
+        Embarked_Q: parseInt(document.getElementById('Embarked_Q').value),
+        Embarked_S: parseInt(document.getElementById('Embarked_S').value),
+        HasCabin: parseInt(document.getElementById('HasCabin').value)
+      };
+
+      fetch('/predict', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(datos)
+      })
+      .then(resp => resp.json())
+      .then(data => {
+        if (data.error) {
+          document.getElementById('resultado').innerText = 'Error: ' + data.error;
+        } else {
+          document.getElementById('resultado').innerText = 
+            data.prediction === 1 ? '🚢 Sobrevivió' : '⚓ No sobrevivió';
+        }
+      })
+      .catch(err => {
+        document.getElementById('resultado').innerText = 'Error en la petición.';
+        console.error(err);
+      });
+    }
+  </script>
+</head>
+<body>
+  <h1>Predicción de Supervivencia - Titanic</h1>
+  <form onsubmit="predecir(event)">
+    <label for="Pclass">Clase del pasajero (1 a 3):</label>
+    <input type="number" id="Pclass" required>
+
+    <label for="Age">Edad:</label>
+    <input type="number" id="Age" step="any" required>
+
+    <label for="SibSp">Hermanos/Pareja a bordo:</label>
+    <input type="number" id="SibSp" required>
+
+    <label for="Parch">Padres/Hijos a bordo:</label>
+    <input type="number" id="Parch" required>
+
+    <label for="Fare">Tarifa pagada:</label>
+    <input type="number" id="Fare" step="any" required>
+
+    <label for="Sex_male">Sexo (0 = mujer, 1 = hombre):</label>
+    <input type="number" id="Sex_male" required>
+
+    <label for="Embarked_Q">¿Embarcó en Queenstown? (0/1):</label>
+    <input type="number" id="Embarked_Q" required>
+
+    <label for="Embarked_S">¿Embarcó en Southampton? (0/1):</label>
+    <input type="number" id="Embarked_S" required>
+
+    <label for="HasCabin">¿Tiene cabina? (0/1):</label>
+    <input type="number" id="HasCabin" required>
+
+    <button type="submit">Predecir</button>
+  </form>
+  <p id="resultado"></p>
+</body>
+</html>

@@ -55,16 +55,20 @@
     function predecir(event) {
       event.preventDefault();
 
+      const sexo = document.getElementById('Sex').value;
+      const embarked = document.getElementById('Embarked').value;
+      const cabina = document.getElementById('HasCabinSel').value;
+
       const datos = {
         Pclass: parseInt(document.getElementById('Pclass').value),
         Age: parseFloat(document.getElementById('Age').value),
         SibSp: parseInt(document.getElementById('SibSp').value),
         Parch: parseInt(document.getElementById('Parch').value),
         Fare: parseFloat(document.getElementById('Fare').value),
-        Sex_male: parseInt(document.getElementById('Sex_male').value),
-        Embarked_Q: parseInt(document.getElementById('Embarked_Q').value),
-        Embarked_S: parseInt(document.getElementById('Embarked_S').value),
-        HasCabin: parseInt(document.getElementById('HasCabin').value)
+        Sex_male: sexo === 'male' ? 1 : 0,
+        Embarked_Q: embarked === 'Q' ? 1 : 0,
+        Embarked_S: embarked === 'S' ? 1 : 0,
+        HasCabin: cabina === 'yes' ? 1 : 0
       };
 
       fetch('/predict', {
@@ -106,17 +110,24 @@
     <label for="Fare">Tarifa pagada:</label>
     <input type="number" id="Fare" step="any" required>
 
-    <label for="Sex_male">Sexo (0 = mujer, 1 = hombre):</label>
-    <input type="number" id="Sex_male" required>
+    <label for="Sex">Sexo:</label>
+    <select id="Sex" required>
+      <option value="male">Hombre</option>
+      <option value="female">Mujer</option>
+    </select>
 
-    <label for="Embarked_Q">¿Embarcó en Queenstown? (0/1):</label>
-    <input type="number" id="Embarked_Q" required>
+    <label for="Embarked">Puerto de embarque:</label>
+    <select id="Embarked" required>
+      <option value="C">Cherbourg</option>
+      <option value="Q">Queenstown</option>
+      <option value="S">Southampton</option>
+    </select>
 
-    <label for="Embarked_S">¿Embarcó en Southampton? (0/1):</label>
-    <input type="number" id="Embarked_S" required>
-
-    <label for="HasCabin">¿Tiene cabina? (0/1):</label>
-    <input type="number" id="HasCabin" required>
+    <label for="HasCabinSel">¿Tiene cabina?</label>
+    <select id="HasCabinSel" required>
+      <option value="yes">Sí</option>
+      <option value="no">No</option>
+    </select>
 
     <button type="submit">Predecir</button>
   </form>
